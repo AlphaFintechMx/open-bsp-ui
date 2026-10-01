@@ -4,13 +4,7 @@ pkgs.writeShellScriptBin "update-open-bsp-ui" ''
   #!${pkgs.bash}/bin/bash
   set -e
 
-  ${pkgs.gum}/bin/gum style --border rounded --align center --margin "1" --foreground "#25D366" --border-foreground "#25D366" '
-     ___                   ____  ____  ____     __  ______
-    / _ \ _ __  ___ _ __  / __ )/ __ \/ __ \   / / / /  _/
-   / // // '_ \/ -_) '_ \/ /_/ / /_/ / /_/ /  / /_/ // /  
-   \___// .__/\__/_//_//_____// ____/ .___/   \____/___/  
-       /_/                   /_/    /_/                   
-  '
+  ${pkgs.gum}/bin/gum style --border rounded --align center --margin "1" --padding "1 2" --foreground "#25D366" --border-foreground "#25D366" --bold "OpenBSP UI - WhatsApp & Instagram Web"
 
   APP_DIR="''${HOME}/open-bsp-ui"
   BRANCH="main"
