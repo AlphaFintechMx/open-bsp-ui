@@ -32,11 +32,6 @@ pkgs.writeShellScriptBin "update-open-bsp-ui" ''
   ${pkgs.nodejs}/bin/npm install
   ${pkgs.nodejs}/bin/npm run build
 
-  echo "Minifying CSS and JavaScript assets..."
-  if [ -d "$APP_DIR/dist" ]; then
-    find "$APP_DIR/dist" -type f \( -name "*.css" -o -name "*.js" \) -exec ${pkgs.esbuild}/bin/esbuild {} --minify --allow-overwrite --outfile={} \;
-  fi
-
   chmod -R 755 "$APP_DIR/dist" 2>/dev/null || true
 
   echo "🌐 Reloading Nginx..."
