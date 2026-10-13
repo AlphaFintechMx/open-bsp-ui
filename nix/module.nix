@@ -78,18 +78,23 @@ in
       } // (lib.optionalAttrs cfg.plausible.enable {
         "= /js/script.js" = {
           proxyPass = "${cfg.plausible.upstream}/js/script.js";
+          recommendedProxySettings = false;
           extraConfig = ''
             proxy_set_header Host "${cfg.plausible.domain}";
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
             proxy_buffering on;
           '';
         };
         "= /api/event" = {
           proxyPass = "${cfg.plausible.upstream}/api/event";
+          recommendedProxySettings = false;
           extraConfig = ''
             proxy_set_header Host "${cfg.plausible.domain}";
+            proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Host $host;
             proxy_buffering on;
           '';
         };
