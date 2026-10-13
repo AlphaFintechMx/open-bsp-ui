@@ -19,9 +19,18 @@ pkgs.writeShellScriptBin "update-open-bsp-ui" ''
   cd "$APP_DIR" || { echo "Directory $APP_DIR not found"; exit 1; }
 
   echo "📥 Pulling latest updates for branch $BRANCH..."
+  PREV_COMMIT=$(git rev-parse HEAD 2>/dev/null || true)
   git fetch origin
   git checkout "$BRANCH" || git checkout -b "$BRANCH" "origin/$BRANCH"
   git reset --hard "origin/$BRANCH" 2>/dev/null || git pull origin "$BRANCH"
+  NEW_COMMIT=$(git rev-parse HEAD 2>/dev/null || true)
+
+  if [ -d "/etc/nixos" ] && [ -n "$PREV_COMMIT" ] && [ -n "$NEW_COMMIT" ] && [ "$PREV_COMMIT" != "$NEW_COMMIT" ]; then
+    if git diff --name-only "$PREV_COMMIT" "$NEW_COMMIT" | grep -qE '(^|/)module\.nix$'; then
+      echo "Changes detected in module.nix. Updating NixOS flake input 'open-bsp-ui'..."
+      (cd /etc/nixos && (nix flake update open-bsp-ui 2>/dev/null || sudo nix flake update open-bsp-ui) && nh os switch)
+    fi
+  fi
 
   if [ ! -f .env ] && [ -f .env.example ]; then
     echo "⚙️ Initializing .env from .env.example..."
